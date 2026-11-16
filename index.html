@@ -800,11 +800,67 @@ h2 { font-size: 21px; font-weight: 800; letter-spacing: -.01em; }
     </div>
   </section>
 
+  <!-- PWA CONVERT -->
+  <section class="screen" id="s-pwa">
+    <div class="top">
+      <button class="icon-btn" data-back="s-url"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i class="on"></i><i></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="center" style="justify-content:flex-start;padding-top:20px">
+      <div class="hero-icon" style="background:linear-gradient(160deg,#0ea5e9,#0369a1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/></svg>
+      </div>
+      <h2>تحويل موقعي إلى تطبيق ويب</h2>
+      <p class="sub" style="max-width:300px">سيصبح موقعك سهل الدخول كأيقونة على الشاشة الرئيسية — مثل التطبيقات تماماً.</p>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row">
+          <div class="txt">
+            <b>تفعيل التحويل إلى تطبيق</b>
+            <small>أيقونة على الشاشة الرئيسية</small>
+          </div>
+          <button class="sw" id="pwa-switch" role="switch" aria-checked="false"><i></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-pwa-next">عدم التحويل</button>
+    </div>
+  </section>
+
+  <!-- STORE -->
+  <section class="screen" id="s-store">
+    <div class="top">
+      <button class="icon-btn" data-back="s-pwa"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="center" style="justify-content:flex-start;padding-top:20px">
+      <div class="hero-icon" style="background:linear-gradient(160deg,#a855f7,#6d28d9)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <h2>استضافة تطبيقك على متجرنا؟</h2>
+      <p class="sub" style="max-width:300px">متجر <b style="color:var(--accent)">amgzrnt</b> — انشر تطبيقك ليصل للمزيد من المستخدمين.</p>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row">
+          <div class="txt">
+            <b>الاستضافة على متجر amgzrnt</b>
+            <small>متجر | amgzrnt</small>
+          </div>
+          <button class="sw" id="store-switch" role="switch" aria-checked="false"><i></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-store-next">تخطي الاستضافة</button>
+    </div>
+  </section>
+
   <!-- VERSION -->
   <section class="screen" id="s-version">
     <div class="top">
-      <button class="icon-btn" data-back="s-url"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-      <div class="dots"><i></i><i></i><i class="on"></i><i></i></div>
+      <button class="icon-btn" data-back="s-store"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i></div>
       <span style="width:40px"></span>
     </div>
     <div class="center" style="justify-content:flex-start;padding-top:28px">
@@ -941,6 +997,7 @@ const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 
 const state = {
   name:'', idea:'', desc:'', cat:'', slug:'',
+  pwa:false, store:false,
   versions:false, repo:'', visibility:'public', repoDesc:'', fromGithub:false
 };
 
@@ -1091,10 +1148,38 @@ kb.addEventListener('pointercancel', () => $$('.kb-key.pressed').forEach(k => k.
 function updateUrlBtn(){ btnConfirmUrl.disabled = state.slug.length < 2; }
 btnConfirmUrl.onclick = () => {
   hideKb();
-  showLoad('جاري حفظ الرابط', 'نتأكد من صحة الرابط', 's-version', 1100);
+  showLoad('جاري حفظ الرابط', 'نتأكد من صحة الرابط', 's-pwa', 1100);
 };
 
 /* Version */
+/* PWA convert */
+const pwaSwitch = $('#pwa-switch');
+const btnPwaNext = $('#btn-pwa-next');
+pwaSwitch.onclick = () => {
+  state.pwa = !state.pwa;
+  pwaSwitch.classList.toggle('on', state.pwa);
+  pwaSwitch.setAttribute('aria-checked', state.pwa);
+  btnPwaNext.textContent = state.pwa ? 'تحويل' : 'عدم التحويل';
+  playClick();
+};
+btnPwaNext.onclick = () => {
+  showLoad(state.pwa ? 'جاري تفعيل التطبيق' : 'متابعة بدون تحويل', state.pwa ? 'نجهّز أيقونة التطبيق' : 'تخطي التحويل إلى تطبيق', 's-store', 1100);
+};
+
+/* Store */
+const storeSwitch = $('#store-switch');
+const btnStoreNext = $('#btn-store-next');
+storeSwitch.onclick = () => {
+  state.store = !state.store;
+  storeSwitch.classList.toggle('on', state.store);
+  storeSwitch.setAttribute('aria-checked', state.store);
+  btnStoreNext.textContent = state.store ? 'استضافة على المتجر' : 'تخطي الاستضافة';
+  playClick();
+};
+btnStoreNext.onclick = () => {
+  showLoad(state.store ? 'جاري ربط المتجر' : 'متابعة بدون متجر', state.store ? 'نربط تطبيقك بـ amgzrnt' : 'تخطي الاستضافة', 's-version', 1100);
+};
+
 const verSwitch = $('#ver-switch'), verWarn = $('#ver-warn');
 verSwitch.onclick = () => {
   state.versions = !state.versions;
@@ -1141,6 +1226,12 @@ function buildMessage(){
   msg += `📝 *الوصف:* ${state.desc || '—'}\n`;
   msg += `🏷️ *الفئة:* ${state.cat}\n`;
   msg += `🔗 *الرابط:* ${url}\n`;
+  if(state.pwa){
+    msg += `\n📱 *تطبيق ويب:* ✅ مفعّل — أيقونة على الشاشة الرئيسية\n`;
+  }
+  if(state.store){
+    msg += `🛒 *الاستضافة على المتجر:* ✅ متجر amgzrnt\n`;
+  }
   if(state.versions){
     msg += `\n🔄 *الإصدارات الجديدة:* ✅ مفعّلة\n`;
     if(state.fromGithub){
@@ -1190,10 +1281,14 @@ $('#btn-share').onclick = async () => {
 };
 
 $('#btn-restart').onclick = () => {
-  Object.assign(state, {name:'',idea:'',desc:'',cat:'',slug:'',versions:false,repo:'',visibility:'public',repoDesc:'',fromGithub:false});
+  Object.assign(state, {name:'',idea:'',desc:'',cat:'',slug:'',pwa:false,store:false,versions:false,repo:'',visibility:'public',repoDesc:'',fromGithub:false});
   nameIn.value = ideaIn.value = descIn.value = '';
   $$('.cat').forEach(c => c.classList.remove('sel'));
   urlDisplay.textContent = '';
+  pwaSwitch.classList.remove('on');
+  btnPwaNext.textContent = 'عدم التحويل';
+  storeSwitch.classList.remove('on');
+  btnStoreNext.textContent = 'تخطي الاستضافة';
   verSwitch.classList.remove('on');
   verWarn.classList.add('show');
   $('#f-repo').value = '';
