@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#062e1a">
+<title>سايك — أنشئ موقعك في 7 دقائق</title>
+<style>
+:root {
+  --bg: #04160e;
+  --surface: rgba(8, 40, 24, 0.72);
+  --surface-solid: #0a2818;
+  --surface2: rgba(12, 50, 30, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(74, 222, 128, 0.18);
+  --text: #f0fdf4;
+  --muted: #86efac99;
+  --primary: #22c55e;
+  --primary-hover: #16a34a;
+  --primary-deep: #15803d;
+  --accent: #4ade80;
+  --gold: #fde68a;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --radius: 18px;
+  --glass: blur(18px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Arabic', system-ui, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button { font: inherit; border: 0; background: none; color: inherit; cursor: pointer; }
+input, textarea { font: inherit; color: inherit; border: 0; outline: none; background: transparent; width: 100%; }
+
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 520px at 80% -8%, rgba(34, 197, 94, 0.28), transparent 55%),
+    radial-gradient(700px 420px at -5% 110%, rgba(21, 128, 61, 0.22), transparent 50%),
+    radial-gradient(500px 300px at 50% 50%, rgba(5, 46, 22, 0.5), transparent 70%),
+    var(--bg);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: max(18px, env(safe-area-inset-top)) 20px max(18px, env(safe-area-inset-bottom));
+  background: transparent;
+  transform: translateX(105%);
+  opacity: 0;
+  transition: transform .5s cubic-bezier(.22,1,.36,1), opacity .35s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.screen.active {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+/* Top bar */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  margin-bottom: 20px;
+}
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  display: grid;
+  place-items: center;
+  transition: transform .12s, background .15s;
+}
+.icon-btn:active { transform: scale(.92); background: var(--surface2); }
+.icon-btn svg { width: 18px; height: 18px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dots { display: flex; gap: 5px; }
+.dots i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border);
+  transition: .3s;
+}
+.dots i.on { background: var(--accent); width: 20px; border-radius: 6px; box-shadow: 0 0 8px rgba(74,222,128,.5); }
+
+/* Typography */
+h1 {
+  font-size: clamp(26px, 6.5vw, 34px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+h2 { font-size: 21px; font-weight: 800; letter-spacing: -.01em; }
+.sub { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin-top: 6px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15.5px;
+  transition: transform .12s, opacity .15s, background .15s;
+}
+.btn:active { transform: scale(.975); }
+.btn:disabled { opacity: .4; pointer-events: none; }
+.btn-primary {
+  background: linear-gradient(180deg, #4ade80 0%, #22c55e 45%, #16a34a 100%);
+  color: #052e16;
+  font-weight: 800;
+  box-shadow: 0 8px 28px rgba(34, 197, 94, 0.4), inset 0 1px 0 rgba(255,255,255,.25);
+  text-shadow: 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-secondary {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  color: var(--text);
+}
+.btn-secondary.sel-noemail {
+  border-color: var(--primary);
+  background: rgba(34,197,94,.14);
+  box-shadow: 0 0 0 1px rgba(34,197,94,.25);
+}
+.btn-github {
+  background: #238636;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(35,134,54,.3);
+}
+.btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* Hero / center */
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+  padding: 10px 0 24px;
+}
+.hero-icon {
+  width: 112px;
+  height: 112px;
+  border-radius: 32px;
+  background: linear-gradient(160deg, #166534 0%, #14532d 40%, #052e16 100%);
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 20px 50px rgba(34, 197, 94, 0.35),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -2px 8px rgba(0,0,0,.3);
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.hero-icon svg { width: 56px; height: 56px; position: relative; z-index: 1; }
+.brand-name {
+  font-size: clamp(36px, 9vw, 48px);
+  font-weight: 900;
+  letter-spacing: -.03em;
+  background: linear-gradient(180deg, #fff 20%, #86efac 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(34,197,94,.3));
+  line-height: 1.1;
+}
+.brand-ar {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .2em;
+  margin-top: 2px;
+  opacity: .9;
+}
+
+/* Form */
+.scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 1px 16px;
+  scrollbar-width: none;
+}
+.scroll::-webkit-scrollbar { display: none; }
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.field {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 13px 15px;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  transition: border-color .2s, box-shadow .2s;
+}
+.field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(34,197,94,.22);
+}
+.field input, .field textarea {
+  font-size: 15.5px;
+  line-height: 1.45;
+}
+.field textarea { min-height: 84px; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: #52525b; }
+
+.cats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.cat {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  padding: 14px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  transition: .2s;
+}
+.cat svg { width: 24px; height: 24px; stroke: var(--muted); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.cat.sel {
+  border-color: var(--primary);
+  background: rgba(34,197,94,.16);
+  box-shadow: 0 0 0 1px rgba(34,197,94,.3);
+}
+.cat.sel svg { stroke: var(--accent); }
+
+/* URL section */
+.url-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.url-body::-webkit-scrollbar { display: none; }
+
+.url-card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 22px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 16px 0 20px;
+  flex-shrink: 0;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  transition: opacity .25s, transform .25s, max-height .3s, margin .3s, padding .3s;
+  max-height: 220px;
+  overflow: hidden;
+}
+.url-card .icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #06b6d4, #0891b2);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 28px rgba(6,182,212,.3);
+}
+.url-card .icon-wrap svg { width: 32px; height: 32px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.url-card h3 { font-size: 17px; font-weight: 700; }
+.url-card p { color: var(--muted); font-size: 13px; }
+
+/* When keyboard is open: collapse the big card */
+#s-url.kb-open .url-card {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  transform: scale(.95);
+  pointer-events: none;
+}
+#s-url.kb-open .url-title,
+#s-url.kb-open .url-sub {
+  display: none;
+}
+#s-url.kb-open .bottom {
+  display: none;
+}
+#s-url.kb-open .url-body {
+  justify-content: flex-start;
+  padding-top: 12px;
+}
+.kb-label {
+  display: none;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+#s-url.kb-open .kb-label {
+  display: block;
+}
+
+.url-field {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 16px;
+  direction: ltr;
+  overflow: hidden;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  transition: border-color .2s, box-shadow .2s;
+  flex-shrink: 0;
+}
+.url-field.focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.22);
+}
+.url-prefix {
+  padding: 14px 4px 14px 14px;
+  color: var(--muted);
+  font-size: 14.5px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.url-value {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 6px;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: .2px;
+  min-height: 22px;
+  word-break: break-all;
+}
+.url-suffix {
+  padding: 14px 14px 14px 2px;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.hint { text-align: center; color: var(--muted); font-size: 12.5px; margin-top: 10px; flex-shrink: 0; }
+#s-url.kb-open .hint { display: none; }
+
+/* Keyboard */
+#kb {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  background: #1c1c1e;
+  border-radius: 12px 12px 0 0;
+  padding: 10px 5px max(8px, env(safe-area-inset-bottom));
+  transform: translateY(110%);
+  transition: transform .36s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 -8px 32px rgba(0,0,0,.45);
+  direction: ltr;
+}
+#kb.show { transform: translateY(0); }
+.kb-row { display: flex; justify-content: center; gap: 5px; margin-bottom: 7px; }
+.kb-key {
+  height: 44px;
+  min-width: 28px;
+  flex: 1;
+  max-width: 34px;
+  border-radius: 7px;
+  background: #3a3a3c;
+  color: #fff;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 0 #000;
+  transition: transform .07s, background .1s;
+}
+.kb-key:active, .kb-key.pressed { transform: scale(.9); background: #636366; }
+.kb-key.wide { max-width: 44px; font-size: 14px; }
+.kb-key.del { max-width: 44px; }
+.kb-key.space { max-width: none; flex: 3.5; font-size: 14px; }
+.kb-key.done {
+  max-width: 72px;
+  background: #0a84ff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.kb-key.done:active { background: #409cff; }
+
+/* Version toggle */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  text-align: right;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+}
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.toggle-row .txt b { font-size: 15px; display: block; }
+.toggle-row .txt small { color: var(--muted); font-size: 12.5px; margin-top: 3px; display: block; font-weight: 400; }
+.sw {
+  width: 50px;
+  height: 30px;
+  border-radius: 30px;
+  background: #3f3f46;
+  position: relative;
+  flex-shrink: 0;
+  transition: background .25s;
+}
+.sw i {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+  transition: transform .25s cubic-bezier(.34,1.4,.64,1);
+}
+.sw.on { background: var(--success); }
+.sw.on i { transform: translateX(-20px); }
+.warn {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.25);
+  color: #fca5a5;
+  font-size: 12.5px;
+  line-height: 1.5;
+  display: none;
+}
+.warn.show { display: block; }
+
+/* GitHub */
+.gh-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.gh-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(13, 17, 23, 0.85);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  display: grid;
+  place-items: center;
+}
+.gh-badge svg { width: 26px; height: 26px; fill: #e6edf3; }
+.gh-top h2 { font-size: 18px; }
+.gh-top p { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+
+.sponsor {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: linear-gradient(145deg, #238636, #2ea043);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 12px 32px rgba(35,134,54,.3);
+}
+.sponsor svg { width: 36px; height: 36px; stroke: #fff; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.radios { display: flex; gap: 10px; }
+.radio {
+  flex: 1;
+  padding: 13px 8px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: .2s;
+}
+.radio.sel {
+  border-color: #238636;
+  background: rgba(35,134,54,.16);
+  color: #3fb950;
+  box-shadow: 0 0 0 1px rgba(35,134,54,.25);
+}
+
+/* Export */
+.msg {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  padding: 18px;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  -webkit-user-select: text;
+  user-select: text;
+  direction: rtl;
+  backdrop-filter: var(--glass);
+  -webkit-backdrop-filter: var(--glass);
+}
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+}
+.note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 22px;
+  left: 50%;
+  transform: translate(-50%, -90px);
+  background: var(--success);
+  color: #fff;
+  padding: 11px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 13.5px;
+  z-index: 200;
+  transition: transform .35s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 8px 24px rgba(34,197,94,.35);
+}
+.toast.show { transform: translate(-50%, 0); }
+
+/* Loading screens */
+.load-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 18px;
+  padding: 20px;
+}
+.load-gh-logo {
+  width: 96px;
+  height: 96px;
+  border-radius: 28px;
+  background: rgba(13, 17, 23, 0.9);
+  border: 1px solid rgba(255,255,255,.1);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 16px 40px rgba(0,0,0,.4);
+  margin-bottom: 8px;
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+.load-gh-logo svg {
+  width: 48px;
+  height: 48px;
+  fill: #e6edf3;
+}
+.load-spinner {
+  width: 56px;
+  height: 56px;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.load-spinner svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 1s linear infinite;
+}
+.load-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.01em;
+}
+.load-sub {
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 260px;
+  line-height: 1.5;
+}
+.load-dots::after {
+  content: '';
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: dots 1.4s steps(4, end) infinite;
+  color: #fff;
+}
+.load-bar {
+  width: min(200px, 55vw);
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.12);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.load-bar i {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #238636, #3fb950);
+  animation: bar-slide 1.2s ease-in-out infinite;
+}
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..'; }
+  75%  { content: '...'; }
+  100% { content: ''; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes bar-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(280%); }
+}
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.04); opacity: .9; }
+}
+
+.dsheet-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.dsheet-ov.on{opacity:1;visibility:visible}
+.dsheet{position:fixed;left:0;right:0;bottom:0;margin:0 auto;max-width:520px;max-height:92vh;overflow-y:auto;z-index:41;background:var(--surface-solid);border:1px solid var(--border-strong);border-bottom:0;border-radius:32px 32px 0 0;padding:12px 20px max(22px,env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .55s cubic-bezier(.2,.9,.25,1.05),visibility .55s;box-shadow:0 -14px 50px rgba(0,0,0,.5)}
+.dsheet.on{transform:none;visibility:visible}
+.dsheet>div{display:flex;flex-direction:column;gap:12px}
+.dsheet input{-webkit-user-select:text;user-select:text}
+.dsheet-handle{width:42px;height:4px;border-radius:4px;background:rgba(255,255,255,.2);margin:2px auto 12px}
+.ds-ico{width:68px;height:68px;border-radius:22px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#f59e0b,#b45309)}
+.ds-ico svg{width:32px;height:32px}
+.ds-err{display:none;padding:10px 14px;border-radius:14px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;font-size:13px;text-align:center}
+.ds-err.show{display:block}
+.ds-cred{background:var(--surface2);border:1px solid var(--border-strong);border-radius:20px;padding:6px 16px;-webkit-user-select:text;user-select:text}
+.ds-cred div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ds-cred div:last-child{border:0}
+.ds-cred small{color:var(--muted)}.ds-cred b{font-size:14px;word-break:break-all}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <section class="screen active" id="s-home">
+    <div class="center">
+      <div class="hero-icon">
+        <!-- Browser window + cursor inspired mark -->
+        <svg viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="12" width="40" height="32" rx="5" fill="url(#g1)" stroke="#86efac" stroke-width="1.5"/>
+          <rect x="8" y="12" width="40" height="9" rx="5" fill="#14532d"/>
+          <circle cx="14" cy="16.5" r="1.6" fill="#f87171"/>
+          <circle cx="19" cy="16.5" r="1.6" fill="#fbbf24"/>
+          <circle cx="24" cy="16.5" r="1.6" fill="#4ade80"/>
+          <rect x="13" y="26" width="12" height="9" rx="2" fill="#166534" stroke="#4ade80" stroke-width="1"/>
+          <path d="M15.5 32.5l2-2.5 2 1.2 2.5-3.2" stroke="#86efac" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="28" y="26" width="14" height="2.2" rx="1" fill="#4ade80" opacity=".7"/>
+          <rect x="28" y="30.5" width="11" height="2.2" rx="1" fill="#4ade80" opacity=".45"/>
+          <rect x="28" y="35" width="8" height="2.2" rx="1" fill="#4ade80" opacity=".3"/>
+          <!-- Cursor -->
+          <path d="M42 34l8 3.2-3.5 1.5 2.2 5.2-2.4 1-2.2-5.1-3.5 2.8L42 34z" fill="#fff" stroke="#052e16" stroke-width="1.2" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g1" x1="8" y1="12" x2="48" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#bbf7d0"/><stop offset="1" stop-color="#86efac"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="brand-name">سايك</div>
+      <div class="brand-ar">Sauk</div>
+      <h1 style="font-size:clamp(20px,5vw,24px);font-weight:700;margin-top:10px;color:#d1fae5">أنشئ موقعك في 7 دقائق</h1>
+      <p class="sub" style="max-width:300px;color:#86efac99">من الفكرة إلى رابط جاهز للمشاركة — بخطوات بسيطة وسريعة واحترافية.</p>
+      <button class="btn btn-primary" id="btn-start" style="margin-top:22px">
+        إنشاء الموقع
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+    </div>
+    <p class="note">يعمل بالكامل داخل المتصفح · لا يحتاج حساب</p>
+  </section>
+
+  <!-- DETAILS -->
+  <section class="screen" id="s-details">
+    <div class="top">
+      <button class="icon-btn" data-back="s-home"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <h2>معلومات موقعك</h2>
+    <p class="sub">املأ التفاصيل الأساسية</p>
+    <div class="scroll" style="margin-top:18px">
+      <div>
+        <label class="field-label">اسم الموقع</label>
+        <div class="field"><input id="f-name" placeholder="مثال: مهنتي" maxlength="40"></div>
+      </div>
+      <div>
+        <label class="field-label">فكرة الموقع</label>
+        <div class="field"><input id="f-idea" placeholder="مثال: منصة لعرض السير الذاتية" maxlength="80"></div>
+      </div>
+      <div>
+        <label class="field-label">الوصف</label>
+        <div class="field"><textarea id="f-desc" placeholder="اكتب وصفاً مختصراً عن موقعك..." maxlength="220"></textarea></div>
+      </div>
+      <div>
+        <label class="field-label">الفئة</label>
+        <div class="cats">
+          <button class="cat" data-cat="اجتماعي">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            اجتماعي
+          </button>
+          <button class="cat" data-cat="تعليمي">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            تعليمي
+          </button>
+          <button class="cat" data-cat="أدوات">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            أدوات
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-to-url" disabled>التالي</button>
+    </div>
+  </section>
+
+  <!-- URL -->
+  <section class="screen" id="s-url">
+    <div class="top">
+      <button class="icon-btn" data-back="s-details"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i class="on"></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <h2 class="url-title" style="text-align:center">إعداد رابطك</h2>
+    <p class="sub url-sub" style="text-align:center">اختر اسماً قصيراً وواضحاً</p>
+
+    <div class="url-body">
+      <div class="url-card">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h3>رابطك الخاص</h3>
+        <p>سيظهر موقعك على هذا العنوان</p>
+      </div>
+
+      <p class="kb-label">اكتب اسم الرابط</p>
+      <div class="url-field" id="url-box">
+        <span class="url-prefix">https://</span>
+        <div class="url-value" id="url-display"></div>
+        <span class="url-suffix">.pages.dev</span>
+      </div>
+      <p class="hint">اضغط على الحقل للكتابة · أحرف إنجليزية وأرقام وشرطة فقط</p>
+    </div>
+
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-confirm-url" disabled>اعتماد الرابط</button>
+    </div>
+  </section>
+
+  <!-- PWA CONVERT -->
+  <section class="screen" id="s-pwa">
+    <div class="top">
+      <button class="icon-btn" data-back="s-url"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i class="on"></i><i></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="center" style="justify-content:flex-start;padding-top:20px">
+      <div class="hero-icon" style="background:linear-gradient(160deg,#0ea5e9,#0369a1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/></svg>
+      </div>
+      <h2>تحويل موقعي إلى تطبيق ويب</h2>
+      <p class="sub" style="max-width:300px">سيصبح موقعك سهل الدخول كأيقونة على الشاشة الرئيسية — مثل التطبيقات تماماً.</p>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row">
+          <div class="txt">
+            <b>تفعيل التحويل إلى تطبيق</b>
+            <small>أيقونة على الشاشة الرئيسية</small>
+          </div>
+          <button class="sw" id="pwa-switch" role="switch" aria-checked="false"><i></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-pwa-next">عدم التحويل</button>
+    </div>
+  </section>
+
+  <!-- STORE -->
+  <section class="screen" id="s-store">
+    <div class="top">
+      <button class="icon-btn" data-back="s-pwa"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="center" style="justify-content:flex-start;padding-top:20px">
+      <div class="hero-icon" style="background:linear-gradient(160deg,#a855f7,#6d28d9)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <h2>استضافة تطبيقك على متجرنا؟</h2>
+      <p class="sub" style="max-width:300px">متجر <b style="color:var(--accent)">amgzrnt</b> — انشر تطبيقك ليصل للمزيد من المستخدمين.</p>
+      <div class="card" style="margin-top:12px">
+        <div class="toggle-row">
+          <div class="txt">
+            <b>الاستضافة على متجر amgzrnt</b>
+            <small>متجر | amgzrnt</small>
+          </div>
+          <button class="sw" id="store-switch" role="switch" aria-checked="false"><i></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-store-next">تخطي الاستضافة</button>
+    </div>
+  </section>
+
+  <!-- DEVELOPER ACCOUNT (sliding sheet) -->
+  <div class="dsheet-ov" id="ds-ov"></div>
+  <div class="dsheet" id="s-dev" role="dialog" aria-modal="true">
+    <div class="dsheet-handle"></div>
+    <div id="ds-form">
+      <div class="ds-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg></div>
+      <h2 style="font-size:19px;text-align:center">حساب المطوّر في متجر amgzrnt</h2>
+      <p class="sub" style="text-align:center;margin-top:0">عبّئ بياناتك وسيُنشأ حسابك في المتجر تلقائياً</p>
+      <div><label class="field-label">اسم المطوّر</label>
+        <div class="field"><input id="f-dev-name" placeholder="مثال: أحمد التقنية" maxlength="40"></div></div>
+      <div><label class="field-label">البريد الإلكتروني</label>
+        <div class="field"><input id="f-dev-email" type="email" placeholder="name@example.com" maxlength="60" style="direction:ltr;text-align:left"></div></div>
+      <div><label class="field-label">كلمة المرور (6 أحرف فأكثر)</label>
+        <div class="field"><input id="f-dev-pass" type="password" placeholder="••••••••" maxlength="40" style="direction:ltr;text-align:left"></div></div>
+      <button class="btn btn-secondary" id="btn-no-email" style="display:none"></button>
+      <div class="ds-err" id="ds-err"></div>
+      <button class="btn btn-primary" id="btn-dev-next" disabled>إنشاء حسابي في المتجر</button>
+      <button class="btn btn-secondary" id="ds-close" style="height:46px;font-size:14px">إلغاء</button>
+    </div>
+    <div id="ds-done" style="display:none">
+      <div class="ds-ico" style="background:linear-gradient(160deg,#22c55e,#15803d)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+      <h2 style="font-size:19px;text-align:center" id="ds-done-title">تم إنشاء حسابك في المتجر</h2>
+      <p class="sub" style="text-align:center;margin-top:0">ادخل المتجر من «دخول المطور» وارفع تطبيقاتك وإعلاناتك</p>
+      <div class="ds-cred">
+        <div><small>الاسم</small><b id="ds-c-name"></b></div>
+        <div><small>البريد</small><b id="ds-c-email" style="direction:ltr"></b></div>
+        <div><small>كلمة المرور</small><b id="ds-c-pass" style="direction:ltr"></b></div>
+      </div>
+      <button class="btn btn-secondary" id="ds-copy" style="height:46px;font-size:14px">نسخ بيانات الدخول</button>
+      <a class="btn btn-secondary" id="ds-store" target="_blank" rel="noopener" style="height:46px;font-size:14px;text-decoration:none">فتح المتجر</a>
+      <button class="btn btn-primary" id="ds-continue">متابعة</button>
+    </div>
+  </div>
+
+  <!-- VERSION -->
+  <section class="screen" id="s-version">
+    <div class="top">
+      <button class="icon-btn" id="version-back"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i></i><i class="on"></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="center" style="justify-content:flex-start;padding-top:28px">
+      <div class="hero-icon" style="background:linear-gradient(145deg,#f59e0b,#d97706)">
+        <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </div>
+      <h2>إصدارات جديدة؟</h2>
+      <p class="sub" style="max-width:290px">هل تريد أن تتمكن لاحقاً من تحديث موقعك وإنشاء إصدارات جديدة بسهولة؟</p>
+      <div class="card" style="margin-top:10px">
+        <div class="toggle-row">
+          <div class="txt">
+            <b>تفعيل الإصدارات الجديدة</b>
+            <small>يتطلب ربط مستودع على GitHub</small>
+          </div>
+          <button class="sw" id="ver-switch" role="switch" aria-checked="false"><i></i></button>
+        </div>
+        <div class="warn show" id="ver-warn">إذا أكملت بدون تفعيل هذه الميزة، لن تتمكن لاحقاً من إنشاء إصدارات جديدة من خلال هذه الأداة.</div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-version-next">نعم، أكمل</button>
+    </div>
+  </section>
+
+  <!-- GITHUB -->
+  <section class="screen" id="s-github">
+    <div class="top">
+      <button class="icon-btn" data-back="s-version"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i class="on"></i><i></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <div class="gh-top">
+      <div class="gh-badge">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </div>
+      <div>
+        <h2>إعداد المستودع</h2>
+        <p>اربط موقعك بـ GitHub للإصدارات</p>
+      </div>
+    </div>
+
+    <div class="sponsor">
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+
+    <div class="scroll" style="padding-top:0">
+      <div>
+        <label class="field-label">اسم المستودع</label>
+        <div class="field" style="direction:ltr;text-align:left"><input id="f-repo" placeholder="my-awesome-site" maxlength="40"></div>
+      </div>
+      <div>
+        <label class="field-label">نوع المستودع</label>
+        <div class="radios">
+          <button class="radio sel" data-vis="public">عام · Public</button>
+          <button class="radio" data-vis="private">خاص · Private</button>
+        </div>
+      </div>
+      <div>
+        <label class="field-label">وصف المستودع</label>
+        <div class="field"><textarea id="f-repo-desc" placeholder="وصف قصير للمستودع..." maxlength="160"></textarea></div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="btn btn-github" id="btn-create-repo">
+        <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        إنشاء المستودع
+      </button>
+    </div>
+  </section>
+
+  <!-- LOADING GITHUB -->
+  <section class="screen" id="s-load-gh">
+    <div class="load-wrap">
+      <div class="load-gh-logo">
+        <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </div>
+      <h2 class="load-title">جاري إنشاء المستودع<span class="load-dots"></span></h2>
+      <p class="load-sub">يتم تجهيز المستودع على GitHub</p>
+      <div class="load-bar"><i></i></div>
+    </div>
+  </section>
+
+  <!-- LOADING GENERAL -->
+  <section class="screen" id="s-load">
+    <div class="load-wrap">
+      <div class="load-spinner">
+        <svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-dasharray="80 40"/></svg>
+      </div>
+      <h2 class="load-title" id="load-text">جاري التجهيز<span class="load-dots"></span></h2>
+      <p class="load-sub" id="load-sub">لحظة واحدة من فضلك</p>
+    </div>
+  </section>
+
+  <!-- EXPORT -->
+  <section class="screen" id="s-export">
+    <div class="top">
+      <button class="icon-btn" id="export-back"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="dots"><i></i><i></i><i></i><i class="on"></i></div>
+      <span style="width:40px"></span>
+    </div>
+    <h2>رسالتك جاهزة</h2>
+    <p class="sub">انسخ الرسالة وشاركها أينما تريد</p>
+    <div class="msg" id="msg-card" style="margin-top:16px"></div>
+    <div class="bottom">
+      <button class="btn btn-primary" id="btn-share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+        مشاركة الرسالة
+      </button>
+      <button class="btn btn-secondary" id="btn-copy" style="height:46px;font-size:14px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        نسخ الرسالة
+      </button>
+      <button class="btn btn-secondary" id="btn-restart" style="height:46px;font-size:14px">البدء من جديد</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Keyboard -->
+<div id="kb">
+  <div class="kb-row" data-row="1"></div>
+  <div class="kb-row" data-row="2"></div>
+  <div class="kb-row" data-row="3"></div>
+  <div class="kb-row" data-row="4"></div>
+</div>
+
+<div class="toast" id="toast">تم النسخ</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+<script>
+(function(){
+'use strict';
+/* رابط متجرك — عدّله إذا كان رابط الاستضافة مختلفاً */
+const STORE_URL = 'https://amgzrnt-store.web.app/';
+let fbAuth = null;
+try {
+  firebase.initializeApp({
+    apiKey: "AIzaSyDQY5rcxoZZUVD6ZZsV9BcQRp0mtjtMO2I",
+    authDomain: "amgzrnt-store.firebaseapp.com",
+    projectId: "amgzrnt-store",
+    storageBucket: "amgzrnt-store.firebasestorage.app",
+    messagingSenderId: "128676036839",
+    appId: "1:128676036839:web:4983eedc52a8b7b7dba242"
+  });
+  fbAuth = firebase.auth();
+} catch(e) {}
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+
+const state = {
+  name:'', idea:'', desc:'', cat:'', slug:'',
+  pwa:false, store:false,
+  devName:'', devEmail:'', devPass:'', noEmail:false,
+  versions:false, repo:'', visibility:'public', repoDesc:'', fromGithub:false, devDone:false
+};
+
+let current = 's-home';
+function go(id){
+  const prev = $('#'+current), next = $('#'+id);
+  if(!next || current===id) return;
+  prev.classList.remove('active');
+  next.classList.add('active');
+  current = id;
+  if(id !== 's-url') hideKb();
+  if(id === 's-export') buildMessage();
+}
+
+$$('[data-back]').forEach(b => b.onclick = () => go(b.dataset.back));
+
+/* Home */
+$('#btn-start').onclick = () => go('s-details');
+
+/* Details */
+const nameIn=$('#f-name'), ideaIn=$('#f-idea'), descIn=$('#f-desc'), btnToUrl=$('#btn-to-url');
+function checkDetails(){
+  state.name = nameIn.value.trim();
+  state.idea = ideaIn.value.trim();
+  state.desc = descIn.value.trim();
+  btnToUrl.disabled = !(state.name && state.idea && state.cat);
+}
+[nameIn,ideaIn,descIn].forEach(el => el.addEventListener('input', checkDetails));
+$$('.cat').forEach(c => {
+  c.onclick = () => {
+    $$('.cat').forEach(x => x.classList.remove('sel'));
+    c.classList.add('sel');
+    state.cat = c.dataset.cat;
+    checkDetails();
+  };
+});
+function showLoad(text, sub, nextId, ms=1400){
+  $('#load-text').innerHTML = text + '<span class="load-dots"></span>';
+  $('#load-sub').textContent = sub || 'لحظة واحدة من فضلك';
+  go('s-load');
+  setTimeout(() => go(nextId), ms);
+}
+
+btnToUrl.onclick = () => {
+  if(!state.slug){
+    state.slug = state.name.toLowerCase()
+      .replace(/[\u0600-\u06FF]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-|-$/g,'')
+      .slice(0,24) || 'my-site';
+    urlDisplay.textContent = state.slug;
+    updateUrlBtn();
+  }
+  showLoad('جاري تجهيز الرابط', 'نحضّر صفحة إعداد الرابط', 's-url', 1200);
+};
+
+/* URL + Keyboard */
+const urlDisplay = $('#url-display');
+const btnConfirmUrl = $('#btn-confirm-url');
+const kb = $('#kb');
+let kbVisible = false;
+
+const rows = [
+  ['q','w','e','r','t','y','u','i','o','p'],
+  ['a','s','d','f','g','h','j','k','l'],
+  ['z','x','c','v','b','n','m'],
+  ['1','2','3','4','5','6','7','8','9','0']
+];
+function buildKb(){
+  kb.querySelector('[data-row="1"]').innerHTML = rows[0].map(k=>`<button class="kb-key" data-k="${k}">${k}</button>`).join('');
+  kb.querySelector('[data-row="2"]').innerHTML = rows[1].map(k=>`<button class="kb-key" data-k="${k}">${k}</button>`).join('');
+  kb.querySelector('[data-row="3"]').innerHTML =
+    `<button class="kb-key wide" data-k="-">-</button>` +
+    rows[2].map(k=>`<button class="kb-key" data-k="${k}">${k}</button>`).join('') +
+    `<button class="kb-key del" data-k="del">⌫</button>`;
+  kb.querySelector('[data-row="4"]').innerHTML =
+    `<button class="kb-key space" data-k=" ">space</button><button class="kb-key done" data-k="done">Done</button>`;
+}
+buildKb();
+
+let actx = null;
+function playClick(){
+  try{
+    if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended') actx.resume();
+    const t = actx.currentTime;
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(680,t);
+    o.frequency.exponentialRampToValueAtTime(300,t+.04);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(.08,t+.004);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.05);
+    o.connect(g); g.connect(actx.destination);
+    o.start(t); o.stop(t+.055);
+  }catch(e){}
+}
+
+function showKb(){
+  if(kbVisible) return;
+  kbVisible = true;
+  kb.classList.add('show');
+  const screen = $('#s-url');
+  screen.classList.add('kb-open');
+  // Give space for keyboard (~260px) so field stays above it
+  screen.style.paddingBottom = '260px';
+  // Scroll the input into view after layout settles
+  requestAnimationFrame(() => {
+    const box = $('#url-box');
+    if(box) box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+}
+function hideKb(){
+  kbVisible = false;
+  kb.classList.remove('show');
+  const screen = $('#s-url');
+  screen.classList.remove('kb-open');
+  screen.style.paddingBottom = '';
+  $('#url-box')?.classList.remove('focus');
+}
+
+$('#url-box').onclick = () => {
+  showKb();
+  playClick();
+  $('#url-box').classList.add('focus');
+};
+
+kb.addEventListener('pointerdown', e => {
+  const key = e.target.closest('.kb-key');
+  if(!key) return;
+  e.preventDefault();
+  key.classList.add('pressed');
+  playClick();
+  const k = key.dataset.k;
+  if(k === 'del') state.slug = state.slug.slice(0,-1);
+  else if(k === 'done'){ hideKb(); }
+  else if(k === ' '){ /* ignore */ }
+  else if(/^[a-z0-9-]$/.test(k) && state.slug.length < 28) state.slug += k;
+  urlDisplay.textContent = state.slug;
+  updateUrlBtn();
+});
+kb.addEventListener('pointerup', e => {
+  const key = e.target.closest('.kb-key');
+  if(key) key.classList.remove('pressed');
+});
+kb.addEventListener('pointercancel', () => $$('.kb-key.pressed').forEach(k => k.classList.remove('pressed')));
+
+function updateUrlBtn(){ btnConfirmUrl.disabled = state.slug.length < 2; }
+btnConfirmUrl.onclick = () => {
+  hideKb();
+  showLoad('جاري حفظ الرابط', 'نتأكد من صحة الرابط', 's-pwa', 1100);
+};
+
+/* Version */
+/* PWA convert */
+const pwaSwitch = $('#pwa-switch');
+const btnPwaNext = $('#btn-pwa-next');
+pwaSwitch.onclick = () => {
+  state.pwa = !state.pwa;
+  pwaSwitch.classList.toggle('on', state.pwa);
+  pwaSwitch.setAttribute('aria-checked', state.pwa);
+  btnPwaNext.textContent = state.pwa ? 'تحويل' : 'عدم التحويل';
+  playClick();
+};
+btnPwaNext.onclick = () => {
+  showLoad(state.pwa ? 'جاري تفعيل التطبيق' : 'متابعة بدون تحويل', state.pwa ? 'نجهّز أيقونة التطبيق' : 'تخطي التحويل إلى تطبيق', 's-store', 1100);
+};
+
+/* Store */
+const storeSwitch = $('#store-switch');
+const btnStoreNext = $('#btn-store-next');
+storeSwitch.onclick = () => {
+  state.store = !state.store;
+  storeSwitch.classList.toggle('on', state.store);
+  storeSwitch.setAttribute('aria-checked', state.store);
+  btnStoreNext.textContent = state.store ? 'استضافة على المتجر' : 'تخطي الاستضافة';
+  playClick();
+};
+btnStoreNext.onclick = () => {
+  if(state.store){
+    if(state.devDone) showLoad('متابعة', 'حسابك جاهز في المتجر', 's-version', 900);
+    else openDevSheet();
+  } else {
+    state.devName = state.devEmail = state.devPass = '';
+    state.noEmail = false;
+    showLoad('متابعة بدون متجر', 'تخطي الاستضافة', 's-version', 1000);
+  }
+};
+
+/* Developer account */
+const devNameIn = $('#f-dev-name');
+const devEmailIn = $('#f-dev-email');
+const devPassIn = $('#f-dev-pass');
+const btnDevNext = $('#btn-dev-next');
+const btnNoEmail = $('#btn-no-email');
+
+function checkDev(){
+  state.devName = (devNameIn.value || '').trim();
+  state.devEmail = (devEmailIn.value || '').trim();
+  state.devPass = (devPassIn.value || '').trim();
+  const okName = state.devName.length >= 2;
+  const okPass = state.devPass.length >= 6;
+  const okEmail = state.noEmail || (state.devEmail.includes('@') && state.devEmail.length > 5);
+  btnDevNext.disabled = !(okName && okPass && okEmail);
+}
+[devNameIn, devEmailIn, devPassIn].forEach(el => el && el.addEventListener('input', checkDev));
+
+btnNoEmail.onclick = () => {
+  state.noEmail = !state.noEmail;
+  btnNoEmail.classList.toggle('sel-noemail', state.noEmail);
+  if(state.noEmail){
+    devEmailIn.value = '';
+    devEmailIn.disabled = true;
+    devEmailIn.placeholder = 'سيتم التخطي — بدون إيميل';
+    state.devEmail = '';
+  } else {
+    devEmailIn.disabled = false;
+    devEmailIn.placeholder = 'name@example.com';
+  }
+  checkDev();
+  playClick();
+};
+
+const dsOv = $('#ds-ov'), dsSheet = $('#s-dev'), dsErr = $('#ds-err');
+function openDevSheet(){
+  dsErr.classList.remove('show');
+  $('#ds-form').style.display = 'flex'; $('#ds-done').style.display = 'none';
+  dsOv.classList.add('on'); dsSheet.classList.add('on');
+  checkDev();
+}
+function closeDevSheet(){ dsOv.classList.remove('on'); dsSheet.classList.remove('on'); }
+dsOv.onclick = closeDevSheet;
+$('#ds-close').onclick = closeDevSheet;
+$('#ds-store').href = STORE_URL;
+
+const AUTH_ERR = {
+  'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
+  'auth/weak-password': 'كلمة المرور ضعيفة — استخدم 6 أحرف أو أكثر',
+  'auth/invalid-credential': 'هذا البريد مسجّل مسبقاً بكلمة مرور مختلفة',
+  'auth/wrong-password': 'هذا البريد مسجّل مسبقاً بكلمة مرور مختلفة',
+  'auth/network-request-failed': 'تعذر الاتصال — تحقق من الإنترنت',
+  'auth/operation-not-allowed': 'فعّل Email/Password في Firebase Authentication',
+  'auth/too-many-requests': 'محاولات كثيرة، انتظر قليلاً ثم أعد المحاولة'
+};
+async function createStoreAccount(name, email, pass){
+  if(!fbAuth) throw {code:'auth/network-request-failed'};
+  let kind = 'new';
+  try {
+    const c = await fbAuth.createUserWithEmailAndPassword(email, pass);
+    await c.user.updateProfile({displayName: name});
+  } catch(e){
+    if(e.code !== 'auth/email-already-in-use') throw e;
+    await fbAuth.signInWithEmailAndPassword(email, pass);
+    kind = 'exists';
+  }
+  try { await fbAuth.signOut(); } catch(e){}
+  return kind;
+}
+btnDevNext.onclick = async () => {
+  if(location.protocol.indexOf('http') !== 0){
+    dsErr.textContent = 'إنشاء الحساب يعمل فقط عندما يكون الموقع على رابط https'; dsErr.classList.add('show'); return;
+  }
+  dsErr.classList.remove('show');
+  btnDevNext.disabled = true; btnDevNext.textContent = 'جاري إنشاء الحساب...';
+  try {
+    const kind = await createStoreAccount(state.devName, state.devEmail, state.devPass);
+    state.devDone = true;
+    $('#ds-c-name').textContent = state.devName;
+    $('#ds-c-email').textContent = state.devEmail;
+    $('#ds-c-pass').textContent = state.devPass;
+    $('#ds-done-title').textContent = kind === 'new' ? 'تم إنشاء حسابك في المتجر' : 'حسابك موجود وجاهز في المتجر';
+    $('#ds-form').style.display = 'none'; $('#ds-done').style.display = 'flex';
+  } catch(e){
+    dsErr.textContent = AUTH_ERR[e && e.code] || ('تعذر إنشاء الحساب: ' + ((e && (e.message || e.code)) || ''));
+    dsErr.classList.add('show');
+  }
+  btnDevNext.textContent = 'إنشاء حسابي في المتجر';
+  checkDev();
+};
+$('#ds-copy').onclick = async () => {
+  const t = `متجر amgzrnt\nالرابط: ${STORE_URL}\nالبريد: ${state.devEmail}\nكلمة المرور: ${state.devPass}`;
+  try { await navigator.clipboard.writeText(t); } catch(e){}
+  const el = $('#toast'); el.textContent = 'تم نسخ بيانات الدخول'; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
+};
+$('#ds-continue').onclick = () => { closeDevSheet(); showLoad('متابعة', 'حسابك جاهز في المتجر', 's-version', 1000); };
+
+$('#version-back').onclick = () => {
+  go('s-store');
+};
+
+const verSwitch = $('#ver-switch'), verWarn = $('#ver-warn');
+verSwitch.onclick = () => {
+  state.versions = !state.versions;
+  verSwitch.classList.toggle('on', state.versions);
+  verSwitch.setAttribute('aria-checked', state.versions);
+  verWarn.classList.toggle('show', !state.versions);
+  playClick();
+};
+
+$('#btn-version-next').onclick = () => {
+  if(state.versions){
+    if(!state.repo){ state.repo = state.slug || 'my-site'; $('#f-repo').value = state.repo; }
+    if(!state.repoDesc){ state.repoDesc = state.idea || state.desc; $('#f-repo-desc').value = state.repoDesc; }
+    showLoad('جاري فتح GitHub', 'نحضّر إعداد المستودع', 's-github', 1200);
+  } else {
+    state.fromGithub = false;
+    showLoad('جاري تجهيز الرسالة', 'نجمع بيانات موقعك', 's-export', 1300);
+  }
+};
+
+/* GitHub */
+$$('.radio').forEach(r => {
+  r.onclick = () => {
+    $$('.radio').forEach(x => x.classList.remove('sel'));
+    r.classList.add('sel');
+    state.visibility = r.dataset.vis;
+  };
+});
+$('#f-repo').addEventListener('input', e => state.repo = e.target.value.trim());
+$('#f-repo-desc').addEventListener('input', e => state.repoDesc = e.target.value.trim());
+$('#btn-create-repo').onclick = () => {
+  state.fromGithub = true;
+  go('s-load-gh');
+  // Simulated create delay then go to export
+  setTimeout(() => go('s-export'), 2800);
+};
+
+/* Export */
+function buildMessage(){
+  const url = `https://${state.slug}.pages.dev`;
+  let msg = `🚀 *موقع جديد جاهز!*\n\n`;
+  msg += `📌 *اسم الموقع:* ${state.name}\n`;
+  msg += `💡 *الفكرة:* ${state.idea}\n`;
+  msg += `📝 *الوصف:* ${state.desc || '—'}\n`;
+  msg += `🏷️ *الفئة:* ${state.cat}\n`;
+  msg += `🔗 *الرابط:* ${url}\n`;
+  if(state.pwa){
+    msg += `\n📱 *تطبيق ويب:* ✅ مفعّل — أيقونة على الشاشة الرئيسية\n`;
+  }
+  if(state.store){
+    msg += `🛒 *الاستضافة على المتجر:* ✅ متجر amgzrnt\n`;
+    if(state.devName){
+      msg += `👤 *حساب المطوّر:* ${state.devName}`;
+      if(state.devEmail) msg += ` · ${state.devEmail}`;
+      msg += `\n`;
+      if(state.devDone){
+        msg += `🔑 *كلمة المرور:* ${state.devPass}\n`;
+        msg += `🌐 *رابط المتجر:* ${STORE_URL}\n`;
+        msg += `✅ تم إنشاء الحساب تلقائياً — يدخل ويرفع التطبيقات والإعلانات\n`;
+      }
+    }
+  }
+  if(state.versions){
+    msg += `\n🔄 *الإصدارات الجديدة:* ✅ مفعّلة\n`;
+    if(state.fromGithub){
+      msg += `🐙 *المستودع:* ${state.repo || '—'}\n`;
+      msg += `👁️ *النوع:* ${state.visibility === 'public' ? 'عام (Public)' : 'خاص (Private)'}\n`;
+      if(state.repoDesc) msg += `📄 *وصف المستودع:* ${state.repoDesc}\n`;
+    }
+  } else {
+    msg += `\n🔄 *الإصدارات الجديدة:* ❌ غير مفعّلة\n`;
+  }
+  msg += `\n✨ تم الإنشاء عبر *سايك*`;
+  $('#msg-card').textContent = msg;
+}
+
+async function copyMsg(){
+  const text = $('#msg-card').textContent;
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+  }
+  const t = $('#toast');
+  t.textContent = 'تم النسخ';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+$('#btn-copy').onclick = () => copyMsg();
+
+$('#btn-share').onclick = async () => {
+  const text = $('#msg-card').textContent;
+  if(navigator.share){
+    try {
+      await navigator.share({ title: 'سايك — موقع جديد', text });
+      return;
+    } catch(e){
+      if(e && e.name === 'AbortError') return;
+    }
+  }
+  // Fallback: copy
+  await copyMsg();
+  const t = $('#toast');
+  t.textContent = 'تم النسخ — يمكنك لصقها ومشاركتها';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+};
+
+$('#btn-restart').onclick = () => {
+  Object.assign(state, {name:'',idea:'',desc:'',cat:'',slug:'',pwa:false,store:false,devName:'',devEmail:'',devPass:'',noEmail:false,versions:false,repo:'',visibility:'public',repoDesc:'',fromGithub:false,devDone:false});
+  closeDevSheet();
+  nameIn.value = ideaIn.value = descIn.value = '';
+  $$('.cat').forEach(c => c.classList.remove('sel'));
+  urlDisplay.textContent = '';
+  pwaSwitch.classList.remove('on');
+  btnPwaNext.textContent = 'عدم التحويل';
+  storeSwitch.classList.remove('on');
+  btnStoreNext.textContent = 'تخطي الاستضافة';
+  if(devNameIn){ devNameIn.value=''; devEmailIn.value=''; devPassIn.value=''; devEmailIn.disabled=false; devEmailIn.placeholder='name@example.com'; }
+  if(btnNoEmail) btnNoEmail.classList.remove('sel-noemail');
+  if(btnDevNext) btnDevNext.disabled = true;
+  verSwitch.classList.remove('on');
+  verWarn.classList.add('show');
+  $('#f-repo').value = '';
+  $('#f-repo-desc').value = '';
+  $$('.radio').forEach(r => r.classList.toggle('sel', r.dataset.vis === 'public'));
+  btnToUrl.disabled = true;
+  btnConfirmUrl.disabled = true;
+  go('s-home');
+};
+
+$('#export-back').onclick = () => {
+  if(state.versions) go('s-github');
+  else go('s-version');
+};
+})();
+</script>
+</body>
+</html>
